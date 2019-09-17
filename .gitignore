@@ -20,3 +20,7 @@
 # Vim
 Session.vim
 .netrwhist
+
+#
+/copy-test/dest/
+/copy-test/zip/
