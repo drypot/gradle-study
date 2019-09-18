@@ -18,26 +18,26 @@ dependencies {
     testCompile("junit:junit:4.12")
 }
 
-tasks.create("helloWorldGradle") {
+tasks.register("helloWorldGradle") {
   group = "Custom"
   doLast {
     println("Hello World Gradle !")
   }
 }
 
-tasks.create<JavaExec>("helloWorld") {
+tasks.register<JavaExec>("helloWorld") {
   group = "Custom"
   main = "com.drypot.HelloWorld"
-  classpath = sourceSets["main"].runtimeClasspath
+  classpath = sourceSets.main.get().runtimeClasspath
 }
 
-tasks.create<JavaExec>("dumpTimeZone") {
+tasks.register<JavaExec>("dumpTimeZone") {
   group = "Custom"
   main = "com.drypot.DumpTimeZone"
-  classpath = sourceSets["main"].runtimeClasspath
+  classpath = sourceSets.main.get().runtimeClasspath
 }
 
-tasks.create<Copy>("copy") {
+tasks.register<Copy>("copy") {
   group = "Custom"
   from("copy-test/src")
   into("copy-test/dest")
@@ -48,4 +48,38 @@ tasks.create<Zip>("zip") {
   archiveFileName.set("sample.zip")
   destinationDirectory.set(file("copy-test/zip"))
   from("copy-test/src")
+
+//  from("$buildDir/toArchive") {
+//    exclude("**/*.pdf")
+//  }
+//
+//  from("$buildDir/toArchive") {
+//    include("**/*.pdf")
+//    into("docs")
+//  }
+
+}
+
+//tasks.register<Copy>("unpackFiles") {
+//  from(zipTree("src/resources/thirdPartyResources.zip"))
+//  into("$buildDir/resources")
+//}
+
+tasks.register("ensureDirectory") {
+  group = "Custom"
+  doLast {
+    mkdir("images")
+  }
+}
+
+tasks.register<Copy>("copyFromStaging") {
+  group = "Custom"
+  from("src/main/webapp")
+  into("$buildDir/explodedWar")
+  rename("(.+)-staging(.+)", "$1$2")
+}
+
+tasks.register<Delete>("myClean") {
+  group = "Custom"
+  delete(buildDir)
 }
