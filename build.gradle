@@ -1,0 +1,66 @@
+plugins {
+  id "java"
+}
+
+group = 'com.drypot'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  testCompile "junit:junit:4.12"
+}
+
+task helloWorldGradle {
+  group = "Custom"
+  doLast {
+    println "Hello World Gradle !"
+  }
+}
+
+task helloWorld (type: JavaExec) {
+  group = "Custom"
+  main = "com.drypot.HelloWorld"
+  classpath sourceSets.main.runtimeClasspath
+}
+
+task dumpTimeZone (type: JavaExec){
+  group = "Custom"
+  main = "com.drypot.DumpTimeZone"
+  classpath sourceSets.main.runtimeClasspath
+}
+
+task copy (type: Copy) {
+  group = "Custom"
+  from("copy-test/src")
+  into("copy-test/dest")
+}
+
+task zip (type: Zip) {
+  group = "Custom"
+  archiveName "sample.zip"
+  from("copy-test/src")
+  destinationDir(file("copy-test/zip"))
+}
+
+task ensureDirectory {
+  group = "Custom"
+  doLast {
+    mkdir "images"
+  }
+}
+
+task copyFromStaging (type: Copy) {
+  group = "Custom"
+  from "src/main/webapp"
+  into "$buildDir/explodedWar"
+  rename '(.+)-staging(.+)', '$1$2'
+}
+
+task myClean (type:Delete) {
+  group = "Custom"
+  delete buildDir
+}
