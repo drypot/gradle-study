@@ -6,12 +6,38 @@ group = 'com.drypot'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
+
 repositories {
   mavenCentral()
 }
 
 dependencies {
   testCompile "junit:junit:4.12"
+}
+
+task prints {
+  group = "Custom"
+  doLast {
+    println name
+    println project.name
+    println path
+    println projectDir
+    println buildDir
+
+    def dest = "dest"
+    println dest
+  }
+}
+
+task testPhase {
+  group = "Custom"
+  doFirst {
+    println 'This is executed first during the execution phase.'
+  }
+  doLast {
+    println 'This is executed last during the execution phase.'
+  }
+  println 'This is executed during the configuration phase as well.'
 }
 
 task helloWorldGradle {
@@ -21,7 +47,7 @@ task helloWorldGradle {
   }
 }
 
-task helloWorld (type: JavaExec) {
+task helloWorldJava (type: JavaExec) {
   group = "Custom"
   main = "com.drypot.HelloWorld"
   classpath sourceSets.main.runtimeClasspath
