@@ -2,9 +2,9 @@ plugins {
   id "java"
 }
 
-group = 'com.drypot'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+group = "com.drypot"
+version = "0.0.1-SNAPSHOT"
+sourceCompatibility = "11"
 
 
 repositories {
@@ -12,11 +12,11 @@ repositories {
 }
 
 dependencies {
-  testCompile "junit:junit:4.12"
+  compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.28'
+  runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.28'
 }
 
 task prints {
-  group = "Custom"
   doLast {
     println name
     println project.name
@@ -30,63 +30,90 @@ task prints {
 }
 
 task testPhase {
-  group = "Custom"
   doFirst {
-    println 'This is executed first during the execution phase.'
+    println "This is executed first during the execution phase."
   }
   doLast {
-    println 'This is executed last during the execution phase.'
+    println "This is executed last during the execution phase."
   }
-  println 'This is executed during the configuration phase as well.'
+  println "This is executed during the configuration phase as well."
 }
 
 task helloWorldGradle {
-  group = "Custom"
   doLast {
     println "Hello World Gradle !"
   }
 }
 
-task helloWorldJava (type: JavaExec) {
-  group = "Custom"
+task helloWorld (type: JavaExec) {
   main = "com.drypot.HelloWorld"
   classpath sourceSets.main.runtimeClasspath
 }
 
+task helloWorldSLF (type: JavaExec) {
+  main = "com.drypot.HelloWorldSLF"
+  classpath sourceSets.main.runtimeClasspath
+}
+
 task dumpTimeZone (type: JavaExec){
-  group = "Custom"
   main = "com.drypot.DumpTimeZone"
   classpath sourceSets.main.runtimeClasspath
 }
 
 task copy (type: Copy) {
-  group = "Custom"
   from("copy-test/src")
   into("copy-test/dest")
 }
 
 task zip (type: Zip) {
-  group = "Custom"
   archiveName "sample.zip"
   from("copy-test/src")
   destinationDir(file("copy-test/zip"))
 }
 
 task ensureDirectory {
-  group = "Custom"
   doLast {
     mkdir "images"
   }
 }
 
 task copyFromStaging (type: Copy) {
-  group = "Custom"
   from "src/main/webapp"
   into "$buildDir/explodedWar"
   rename '(.+)-staging(.+)', '$1$2'
 }
 
 task myClean (type:Delete) {
-  group = "Custom"
   delete buildDir
 }
+
+task displayJars {
+  doLast {
+    configurations.runtime.each {
+      println it.name
+    }
+    //println "${configurations.runtime.collect { File f -> f.name }}"
+  }
+}
+
+task deleteLibs (type: Delete) {
+  delete "libs"
+}
+
+task downloadLibs (type: Copy) {
+  dependsOn "deleteLibs"
+  from configurations.runtime
+  into "libs"
+}
+
+/*
+jar {
+  manifest {
+    attributes (
+      "Main-Class" : "com.drypot.HelloWorld",
+      "Implementation-Title" : project.name,
+      "Developer"  : "Kyuhyun Park"
+    )
+  }
+}
+*/
